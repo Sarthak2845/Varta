@@ -1,0 +1,72 @@
+@import "tailwindcss";
+/* HTML: <div class="loader"></div> */
+.wavy{
+  --s: 30px; /* control the size*/
+  --c1: #e5fcc2;
+  --c2: #45ada8;
+  
+  --_s:37.5% 12.5% at 62.5%;
+  --_g:34% 99%,#0000 101%;
+  --g1:radial-gradient(var(--_s) 100%,#0000 32%,var(--c1) var(--_g));
+  --g2:radial-gradient(var(--_s) 0   ,#0000 32%,var(--c1) var(--_g));
+  --g3:radial-gradient(var(--_s) 100%,#0000 32%,var(--c2) var(--_g));
+  --g4:radial-gradient(var(--_s) 0   ,#0000 32%,var(--c2) var(--_g));
+  background:
+    var(--g1),
+    var(--g2) 0                calc(3*var(--s)),
+    var(--g3) var(--s)         calc(3*var(--s)),
+    var(--g4) var(--s)         calc(6*var(--s)),
+    var(--g1) calc(2*var(--s)) calc(6*var(--s)),
+    var(--g2) calc(2*var(--s)) calc(9*var(--s)),
+    var(--g3) calc(3*var(--s)) calc(9*var(--s)),
+    var(--g4) calc(3*var(--s)) 0,
+    repeating-linear-gradient(var(--c1) 0 25%,var(--c2) 0 50%);
+  background-size: calc(4*var(--s)) calc(12*var(--s));
+
+}
+.loader {
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 150px;
+  display: inline-grid;
+
+}
+.loader:before,
+.loader:after {
+  content:"Varta";
+  grid-area: 1/1;
+  -webkit-mask:linear-gradient(90deg,#fff 50%,#0000 0) 0 50%/2ch 100%;
+  animation: l11 1s infinite cubic-bezier(0.5,220,0.5,-220);
+}
+.loader:after {
+  -webkit-mask-position:1ch 50%;
+  --s:-1;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(90deg, #ec4899, #ef4444, #f97316);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot.delay-150 {
+  animation-delay: 0.15s;
+}
+
+.dot.delay-300 {
+  animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.3;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes l11 {100%{transform: translateY(calc(var(--s,1)*0.1%));}}
