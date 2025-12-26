@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LuBotMessageSquare, LuMail, LuLock, LuArrowRight } from "react-icons/lu";
+import { LuBotMessageSquare, LuMail, LuLock, LuArrowRight, LuEyeClosed, LuEye } from "react-icons/lu";
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../context/authContext';
 import { useError } from '../context/ErrorContext';
@@ -13,7 +13,7 @@ const Login = () => {
     email: "",
     password: ""
   });
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleChange = (e) => {
     // Fixed typo: e.target.value instead of e.target.vale
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -73,14 +73,26 @@ const Login = () => {
           <div className="relative group">
             <LuLock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-pink-500 transition-colors" size={20} />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500/50 transition-all"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500/50 transition-all"
               name="password"
               required
               value={formData.password}
               onChange={handleChange}
             />
+            {/* Show/Hide Password Toggle */}
+            {
+              formData.password && (
+                <button
+                  type="button"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-pink-500 transition-colors"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <LuEyeClosed size={20} /> : <LuEye size={20} />}
+                </button>
+              )
+            } 
           </div>
 
           {/* Forgot Password Link */}

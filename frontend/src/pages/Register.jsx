@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LuBotMessageSquare, LuUser, LuMail, LuLock, LuArrowRight } from "react-icons/lu";
+import { LuBotMessageSquare, LuUser, LuMail, LuLock, LuArrowRight, LuEyeClosed,LuEye } from "react-icons/lu";
 import { Link, useNavigate } from 'react-router';
 import { authAPI } from '../api/api';
 
@@ -10,7 +10,7 @@ const Register = () => {
     email: "",
     password: ""
   });
-
+const [showPassword, setShowPassword] = useState(false);
   const handelChange = (e) => {
     setFromData({ ...fromData, [e.target.name]: e.target.value });
   };
@@ -82,13 +82,23 @@ const Register = () => {
           <div className="relative group">
             <LuLock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-pink-500 transition-colors" size={20} />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white"
               name="password"
               value={fromData.password}
               onChange={handelChange}
             />
+            {
+              fromData.password && (
+                <button type='button'
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-pink-500 transition-colors"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <LuEyeClosed size={20} /> : <LuEye size={20} />}
+                </button>
+              )
+            }
           </div>
 
           {/* Type must be "submit" */}
