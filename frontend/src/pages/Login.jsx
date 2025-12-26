@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { LuBotMessageSquare, LuMail, LuLock, LuArrowRight } from "react-icons/lu";
-import { Link, useNavigate } from 'react-router'; // Changed to useNavigate hook
+import { Link, useNavigate } from 'react-router';
+import { useAuth } from '../context/authContext';
+import { useError } from '../context/ErrorContext';
 import { authAPI } from '../api/api';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const { showError } = useError();
   const [formData, setFormData] = useState({
     email: "",
     password: ""
@@ -20,12 +24,13 @@ const Login = () => {
     try {
       const response = await authAPI.login(formData);
       if (response.status === 200 || response.status === 201) {
-        // Redirect using the hook
+        // Store user data and token
+        login(response.data.user, response.data.token);
         navigate('/chat');
       }
     } catch (error) {
       console.error("Login Error:", error);
-      alert("Login failed. Please check your credentials.");
+      showError(error.response?.data?.message || error.message || "Login failed. Please check your credentials.");
     }
   };
 
@@ -41,7 +46,7 @@ const Login = () => {
 
         {/* Header Section */}
         <div className="flex flex-col items-center mb-10">
-          <div className="p-4 rounded-2xl bg-linear-to-br from-pink-500/10 to-orange-500/10 border border-white/10 mb-4 group transition-all duration-500 hover:border-pink-500/40">
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-pink-500/10 to-orange-500/10 border border-white/10 mb-4 group transition-all duration-500 hover:border-pink-500/40">
             <LuBotMessageSquare size={40} className="text-white drop-shadow-[0_0_8px_rgba(236,72,153,0.5)]" />
           </div>
           <h2 className='text-4xl font-black tracking-tighter text-white'>Welcome Back</h2>

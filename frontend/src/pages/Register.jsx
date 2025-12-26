@@ -45,7 +45,7 @@ const Register = () => {
         
         {/* Logo Header */}
         <div className="flex flex-col items-center mb-10">
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-pink-500/10 to-orange-500/10 border border-white/10 mb-4">
+          <div className="p-4 rounded-2xl bg-linear-to-br from-pink-500/10 to-orange-500/10 border border-white/10 mb-4">
             <LuBotMessageSquare size={40} className="text-white" />
           </div>
           <h2 className='text-4xl font-black tracking-tighter text-white'>Join Varta</h2>
