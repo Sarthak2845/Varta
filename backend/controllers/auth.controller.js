@@ -67,7 +67,16 @@ const login = async (req, res) => {
             sameSite: 'strict',
             maxAge: 10 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).send({ message: "Login successful" })
+        return res.status(200).send({ 
+            message: "Login successful",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                avatarUrl: user.avatarUrl
+            },
+            token: accessToken
+        })
     } catch (error) {
         console.error("Error during login:", error);
         return res.status(500).send({ message: "Internal server error" });

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { LuBotMessageSquare, LuUser, LuMail, LuLock, LuArrowRight, LuEyeClosed,LuEye } from "react-icons/lu";
 import { Link, useNavigate } from 'react-router';
 import { authAPI } from '../api/api';
+import Toast from '../components/Toast';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Register = () => {
     password: ""
   });
 const [showPassword, setShowPassword] = useState(false);
+const [showToast, setShowToast] = useState(false);
   const handelChange = (e) => {
     setFromData({ ...fromData, [e.target.name]: e.target.value });
   };
@@ -19,10 +21,11 @@ const [showPassword, setShowPassword] = useState(false);
     e.preventDefault();
     try {
       const response = await authAPI.register(fromData);
-      if(response){
-        navigate('/login');
-        console.log("Registration success:", response);
-        alert("Account created successfully!");
+      if(response.status === 200 || response.status === 201) {
+        setShowToast(true);
+        setTimeout(() => {
+          navigate('/login');
+        }, 4000);
       }
 
     } catch (error) {
@@ -112,6 +115,7 @@ const [showPassword, setShowPassword] = useState(false);
           Already registered? <Link to='/login' className="text-white font-bold hover:underline">Sign In</Link>
         </p>
       </div>
+      <Toast isOpen={showToast} onClose={()=>setShowToast(false)} message="Registeration Successful!"/>
     </div>
   );
 };

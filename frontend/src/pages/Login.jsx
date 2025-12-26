@@ -2,18 +2,17 @@ import React, { useState } from 'react';
 import { LuBotMessageSquare, LuMail, LuLock, LuArrowRight, LuEyeClosed, LuEye } from "react-icons/lu";
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../context/authContext';
-import { useError } from '../context/ErrorContext';
 import { authAPI } from '../api/api';
-
+import Toast from '../components/Toast';
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const { showError } = useError();
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const handleChange = (e) => {
     // Fixed typo: e.target.value instead of e.target.vale
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,12 +24,15 @@ const Login = () => {
       const response = await authAPI.login(formData);
       if (response.status === 200 || response.status === 201) {
         // Store user data and token
+        setShowToast(true);
+        setTimeout(() => {
+          navigate('/main');
+        }, 4000);
         login(response.data.user, response.data.token);
-        navigate('/chat');
       }
     } catch (error) {
       console.error("Login Error:", error);
-      showError(error.response?.data?.message || error.message || "Login failed. Please check your credentials.");
+      alert("Login failed. Please check your credentials.");
     }
   };
 
@@ -120,9 +122,7 @@ const Login = () => {
           </Link>
         </p>
       </div>
-
-      {/* Background Texture Overlay */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+      <Toast isOpen={showToast} onClose={()=>setShowToast(false)} message="Login Successful!"/>
     </div>
   );
 };
