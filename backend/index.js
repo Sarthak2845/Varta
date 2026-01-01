@@ -1,24 +1,38 @@
 const express = require('express');
-const app = express();
 const connectDB = require('./config/connectDB');
 const PORT = process.env.PORT || 3000;
 const authRoutes = require('./routes/auth.route');
 const userRoutes = require('./routes/users.route');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-connectDB();
+const {initSocket}=require('./config/socket')
+const chatRoutes = require('./routes/chat.routes');
+
+const app = express();
+const http=require('http');
+const server=http.createServer(app);
+initSocket(server);
+
+// Middleware setup
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 })); 
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
+
+connectDB();
+
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);
+app.use('/api/chat', chatRoutes);
+
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
-app.listen(PORT, () => {
+
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

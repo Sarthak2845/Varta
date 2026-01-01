@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { LuBotMessageSquare, LuSend, LuPlus, LuHash, LuSearch, LuSettings, LuLogOut } from "react-icons/lu";
+import { LuBotMessageSquare, LuSettings } from "react-icons/lu";
 import { userAPI } from '../api/api';
-import Chat from './Chat';
-import Welcom from '../components/Welcom';
+import { ChatProvider } from '../context/chatContext';
+import ChatInterface from '../components/ChatInterface';
+import { useAuth } from '../context/authContext';
 
 const MainUI = () => {
-  const [me, setme] = useState(null);
+  const { user } = useAuth();
+  const [me, setMe] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
+  
   useEffect(() => {
-    const fetchUsersDeatils = async () => {
+    const fetchUsersDetails = async () => {
       try {
         const res1 = await userAPI.me();
-        setme(res1.data.user);
+        setMe(res1.data.user);
         const res2 = await userAPI.getAllUsers();
         setAllUsers(res2.data.users);
       } catch (error) {
@@ -20,13 +23,12 @@ const MainUI = () => {
       }
     };
 
-    fetchUsersDeatils();
+    fetchUsersDetails();
   }, []);
 
   return (
     <div className='relative flex h-screen w-full bg-[#0a0a0c] text-white overflow-hidden font-sans'>
-
-      {/* Background Blobs (Kept for consistency) */}
+      {/* Background Blobs */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-pink-600/10 rounded-full blur-[150px]" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-600/10 rounded-full blur-[150px]" />
 
@@ -45,8 +47,8 @@ const MainUI = () => {
           </div>
           {allUsers.map((user) => (
             <div
-              key={user.id}
-              className=' bg-white/8 flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors'
+              key={user._id}
+              className='bg-white/8 flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors'
               onClick={() => setSelectedChat(user)}
             >
               <img
@@ -59,30 +61,39 @@ const MainUI = () => {
               </div>
             </div>
           ))}
-
         </div>
 
         {/* User Profile Footer */}
-        <div className='p-4 bg-white/2   border-t border-white/5 flex items-center gap-3'>
+        <div className='p-4 bg-white/2 border-t border-white/5 flex items-center gap-3'>
           <img
             src={me?.avatarUrl || "https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=Aidan"}
             alt="avatar"
             className="w-10 h-10 rounded-full"
           />
           <div className='flex-1 min-w-0'>
-            <p className='text-sm font-bold truncate'>{me?.name || "Lodaing..."}</p>
+            <p className='text-sm font-bold truncate'>{me?.name || "Loading..."}</p>
             <p className='text-[10px] text-green-400 uppercase tracking-tighter'>Online</p>
           </div>
-          <button className='text-white/30 hover:text-white transition-colors'><LuSettings size={18} /></button>
+          <button className='text-white/30 hover:text-white transition-colors'>
+            <LuSettings size={18} />
+          </button>
         </div>
       </aside>
 
       {/* Main Chat Area */}
-      {
-        selectedChat ? (
-          <Chat Auser={selectedChat}/>
-        ) : (<Welcom/>)
-      }
+      <ChatProvider>
+        {selectedChat ? (
+          <ChatInterface selectedUser={selectedChat} />
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center text-white/60">
+              <LuBotMessageSquare size={64} className="mx-auto mb-4 opacity-50" />
+              <h3 className="text-xl font-semibold mb-2">Welcome to Varta</h3>
+              <p>Select a user to start chatting</p>
+            </div>
+          </div>
+        )}
+      </ChatProvider>
     </div>
   );
 };
