@@ -22,8 +22,10 @@ export const ChatProvider = ({ children }) => {
   // Initialize socket connection
   useEffect(() => {
     if (isAuthenticated && user) {
-      const newSocket = io('http://localhost:3000', {
-        withCredentials: true
+      const socketUrl = (import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000/api').replace('/api', '');
+      const newSocket = io(socketUrl, {
+        withCredentials: true,
+        transports: ['websocket', 'polling']
       });
 
       newSocket.on('connect', () => console.log('Socket connected:', newSocket.id));
