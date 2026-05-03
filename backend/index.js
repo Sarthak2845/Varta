@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 const connectDB = require('./config/connectDB');
 const PORT = process.env.PORT || 3000;
@@ -7,7 +8,6 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const {initSocket}=require('./config/socket')
 const chatRoutes = require('./routes/chat.routes');
-
 const app = express();
 const http=require('http');
 const server=http.createServer(app);
